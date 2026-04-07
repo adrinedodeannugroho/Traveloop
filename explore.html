@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Explore — Traveloop</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="explore-page">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg wn-navbar wn-navbar-solid fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand wn-brand" href="index.html">
+      <span class="brand-icon"><i class="bi bi-compass"></i></span>Traveloop
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="about.html"><i class="bi bi-info-circle me-1"></i>Tentang Kami</a></li>
+        <li class="nav-item"><a class="nav-link active" href="explore.html"><i class="bi bi-compass me-1"></i>Explore</a></li>
+        <li class="nav-item"><a class="nav-link" href="contact.html"><i class="bi bi-envelope me-1"></i>Kontak</a></li>
+        <li class="nav-item ms-lg-2"><a class="nav-link btn-admin" href="admin/index.html"><i class="bi bi-shield-lock me-1"></i>Admin</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header-solid">
+  <div class="container">
+    <h1 class="page-title">Jelajahi Wisata Banyumas</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb wn-breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item active">Explore</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4">
+
+    <!-- SIDEBAR FILTER -->
+    <div class="col-lg-3">
+      <div class="filter-panel" id="filterPanel">
+        <div class="filter-panel-header">
+          <h5 class="filter-title mb-0"><i class="bi bi-sliders2 me-2"></i>Filters</h5>
+          <button class="btn-reset-filter" onclick="resetFilters()">Reset</button>
+        </div>
+
+        <!-- Search -->
+        <div class="filter-section">
+          <label class="filter-label">Search</label>
+          <div class="filter-search-wrap">
+            <i class="bi bi-search"></i>
+            <input type="text" id="filterSearch" class="form-control filter-input" placeholder="Nama tempat, kecamatan…"/>
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="filter-section">
+          <label class="filter-label">Category</label>
+          <div class="cat-filter-list">
+            <button class="cat-filter-btn active" data-cat="all">All</button>
+            <button class="cat-filter-btn" data-cat="nature"><i class="bi bi-tree"></i> Nature</button>
+            <button class="cat-filter-btn" data-cat="beach"><i class="bi bi-water"></i> Beach</button>
+            <button class="cat-filter-btn" data-cat="mountain"><i class="bi bi-snow2"></i> Mountain</button>
+            <button class="cat-filter-btn" data-cat="cultural"><i class="bi bi-building-fill"></i> Cultural</button>
+            <button class="cat-filter-btn" data-cat="historical"><i class="bi bi-bank2"></i> Historical</button>
+          </div>
+        </div>
+
+        <!-- Rating -->
+        <div class="filter-section">
+          <label class="filter-label">Minimum Rating</label>
+          <div class="rating-filter">
+            <input type="range" class="form-range wn-range" id="ratingRange" min="0" max="5" step="0.5" value="0"/>
+            <div class="d-flex justify-content-between mt-1">
+              <small class="text-muted">Any</small>
+              <span class="rating-val" id="ratingVal">Any</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Distance -->
+        <div class="filter-section">
+          <label class="filter-label">Max Distance</label>
+          <select class="form-select wn-select" id="distanceFilter">
+            <option value="">Any distance</option>
+            <option value="5000">Within 5 km</option>
+            <option value="10000">Within 10 km</option>
+            <option value="25000">Within 25 km</option>
+            <option value="50000">Within 50 km</option>
+          </select>
+          <small class="text-muted mt-1 d-block" id="locationStatus">
+            <i class="bi bi-geo-alt me-1"></i><span>Enable location for distance filter</span>
+          </small>
+        </div>
+
+        <div class="filter-section">
+            <label class="filter-label">Tipe</label>
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="cat-filter-btn w-100" id="gemFilterBtn" onclick="toggleGemFilter(this)">
+                <i class="bi bi-gem me-1"></i> Hanya Hidden Gem
+              </button>
+            </div>
+          </div>
+          <button class="btn btn-apply-filter w-100 mt-2" onclick="applyFilters()">Terapkan Filter</button>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-lg-9">
+      <!-- Toolbar -->
+      <div class="explore-toolbar d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div class="results-info" id="resultsInfo">Memuat…</div>
+        <div class="toolbar-right d-flex gap-2 align-items-center">
+          <button class="btn btn-itinerary-sm me-2" onclick="openItineraryModal()"><i class="bi bi-calendar-check me-1"></i>Itinerary 1 Hari</button>
+          <select class="form-select form-select-sm wn-select" id="sortSelect" onchange="sortResults()">
+            <option value="prominence">Sort: Prominence</option>
+            <option value="rating">Sort: Rating</option>
+            <option value="name">Sort: Name</option>
+            <option value="distance">Sort: Terdekat</option>
+          </select>
+          <button class="view-toggle active" id="gridToggle" onclick="setView('grid')" title="Grid View">
+            <i class="bi bi-grid-3x3-gap"></i>
+          </button>
+          <button class="view-toggle" id="listToggle" onclick="setView('list')" title="List View">
+            <i class="bi bi-list-ul"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Active filter chips -->
+      <div id="activeFilters" class="active-filters mb-3 d-none"></div>
+
+      <!-- Grid -->
+      <div class="row g-4" id="placeGrid">
+        <div class="col-12 text-center py-5">
+          <div class="wn-spinner mx-auto"></div>
+          <p class="mt-3 text-muted">Fetching destinations…</p>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="d-flex justify-content-center mt-5" id="paginationWrap"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content wn-modal-content">
+      <button type="button" class="btn-close wn-modal-close" data-bs-dismiss="modal"></button>
+      <div class="modal-body p-0" id="modalBody">
+        <!-- injected by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="wn-footer mt-5">
+  <div class="container">
+    <div class="footer-bottom">
+      <p class="mb-0">© 2025 Traveloop — Wisata Banyumas. Built with Bootstrap 5 & Google Places API.</p>
+    </div>
+  </div>
+</footer>
+
+
+<div class="modal fade" id="itineraryModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content wn-modal-content">
+      <div class="modal-header" style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)">
+        <h5 class="modal-title" style="font-family:var(--ff-display);font-weight:700">
+          <i class="bi bi-calendar-check me-2 text-warning"></i>Itinerary 1 Hari di Banyumas
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <p class="text-muted mb-4">Pilih paket wisata sesuai minat dan kondisimu:</p>
+        <div class="row g-3" id="itineraryOptions"></div>
+        <div id="itineraryResult" class="d-none mt-4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    initNavScroll();
+    initExplorePage();
+    getUserLocation();
+    renderItineraryOptions();
+  });
+  function toggleGemFilter(btn) {
+    btn.classList.toggle('active');
+    state.filters.gemOnly = btn.classList.contains('active');
+    applyFilters();
+  }
+</script>
+</body>
+</html>

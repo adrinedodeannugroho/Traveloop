@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kontak — Traveloop</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg wn-navbar wn-navbar-solid fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand wn-brand" href="index.html"><span class="brand-icon"><i class="bi bi-compass"></i></span>Traveloop</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="about.html"><i class="bi bi-info-circle me-1"></i>Tentang Kami</a></li>
+        <li class="nav-item"><a class="nav-link" href="explore.html"><i class="bi bi-compass me-1"></i>Explore</a></li>
+        <li class="nav-item"><a class="nav-link active" href="contact.html"><i class="bi bi-envelope me-1"></i>Kontak</a></li>
+        <li class="nav-item ms-lg-2"><a class="nav-link btn-admin" href="admin/index.html"><i class="bi bi-shield-lock me-1"></i>Admin</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header-solid">
+  <div class="container">
+    <h1 class="page-title">Hubungi Kami</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb wn-breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item active">Kontak</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-5">
+
+      <!-- FORM -->
+      <div class="col-lg-7">
+        <p class="section-eyebrow">Kirim Pesan</p>
+        <h2 class="section-title">Ada Pertanyaan atau Saran?</h2>
+        <p class="about-text mt-2 mb-4">Kami senang mendengar dari kamu! Isi formulir di bawah dan tim kami akan membalas dalam 1×24 jam.</p>
+
+        <div id="contactAlert" class="d-none"></div>
+
+        <div class="contact-form-wrap">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="contact-label">Nama Lengkap *</label>
+              <input type="text" id="cName" class="form-control contact-input" placeholder="Nama kamu"/>
+            </div>
+            <div class="col-md-6">
+              <label class="contact-label">Email *</label>
+              <input type="email" id="cEmail" class="form-control contact-input" placeholder="email@kamu.com"/>
+            </div>
+            <div class="col-md-6">
+              <label class="contact-label">No. WhatsApp</label>
+              <input type="text" id="cPhone" class="form-control contact-input" placeholder="08xxxxxxxxxx"/>
+            </div>
+            <div class="col-md-6">
+              <label class="contact-label">Topik</label>
+              <select id="cTopic" class="form-select contact-input">
+                <option value="">Pilih topik…</option>
+                <option value="info">Informasi Destinasi</option>
+                <option value="suggest">Saran Destinasi Baru</option>
+                <option value="partnership">Kerjasama / Partnership</option>
+                <option value="bug">Laporkan Bug / Error</option>
+                <option value="other">Lainnya</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="contact-label">Pesan *</label>
+              <textarea id="cMessage" class="form-control contact-input" rows="5" placeholder="Tulis pesanmu di sini…"></textarea>
+            </div>
+            <div class="col-12">
+              <button class="btn btn-contact-send w-100" onclick="sendContactForm()">
+                <i class="bi bi-send me-2"></i>Kirim Pesan
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO KONTAK -->
+      <div class="col-lg-5">
+        <p class="section-eyebrow">Info Kontak</p>
+        <h2 class="section-title">Temukan Kami</h2>
+        <div class="contact-info-list mt-4">
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="--ci-color:#eab308"><i class="bi bi-geo-alt-fill"></i></div>
+            <div>
+              <h6 class="contact-info-title">Alamat</h6>
+              <p class="contact-info-text">Jl. HR. Bunyamin No. 993,<br>Purwokerto, Banyumas, Jawa Tengah 53122</p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="--ci-color:#25d366"><i class="bi bi-whatsapp"></i></div>
+            <div>
+              <h6 class="contact-info-title">WhatsApp</h6>
+              <p class="contact-info-text"><a href="https://wa.me/6281234567890" target="_blank">+62 857-1322-8321</a></p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="--ci-color:#0ea5e9"><i class="bi bi-envelope-fill"></i></div>
+            <div>
+              <h6 class="contact-info-title">Email</h6>
+              <p class="contact-info-text"><a href="mailto:hello@traveloop.id">withtraveloop@gmail.com</a></p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="--ci-color:#e88a22"><i class="bi bi-clock-fill"></i></div>
+            <div>
+              <h6 class="contact-info-title">Jam Operasional</h6>
+              <p class="contact-info-text">Senin – Jumat: 08.00 – 17.00 WIB<br>Sabtu: 09.00 – 13.00 WIB</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SOCIAL -->
+        <div class="contact-socials mt-4">
+          <h6 class="contact-label mb-3">Ikuti Kami</h6>
+          <div class="d-flex gap-3">
+            <a href="#" class="contact-social-link" style="--cs-color:#e1306c"><i class="bi bi-instagram"></i><span>Instagram</span></a>
+            <a href="#" class="contact-social-link" style="--cs-color:#1877f2"><i class="bi bi-facebook"></i><span>Facebook</span></a>
+            <a href="#" class="contact-social-link" style="--cs-color:#000"><i class="bi bi-tiktok"></i><span>TikTok</span></a>
+          </div>
+        </div>
+
+        <!-- MAP EMBED -->
+        <div class="contact-map-wrap mt-4">
+          <iframe
+            width="100%" height="200" style="border:0;border-radius:12px;" loading="lazy"
+            allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.0!2d109.2354!3d-7.4226!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMjUnMjEuNCJTIDEwOcKwMTQnMDcuNCJF!5e0!3m2!1sid!2sid!4v1234567890">
+          </iframe>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section-pad bg-soft">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-eyebrow">Pertanyaan Umum</p>
+      <h2 class="section-title">FAQ</h2>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="accordion faq-accordion" id="faqAccordion">
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header"><button class="accordion-button faq-btn" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">Apakah informasi wisata di Traveloop selalu update?</button></h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+              <div class="accordion-body faq-body">Ya! Tim kami secara rutin memperbarui informasi setiap destinasi termasuk jam buka, harga tiket, dan kondisi terkini. Data juga diambil dari Google Places API untuk akurasi real-time.</div>
+            </div>
+          </div>
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header"><button class="accordion-button faq-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">Bisakah saya mengusulkan destinasi wisata baru?</button></h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body faq-body">Tentu! Kami sangat terbuka untuk saran. Gunakan formulir kontak di atas dengan topik "Saran Destinasi Baru" dan sertakan nama, lokasi, serta deskripsi singkat tempat wisata tersebut.</div>
+            </div>
+          </div>
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header"><button class="accordion-button faq-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">Apakah Traveloop menyediakan jasa pemandu wisata?</button></h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body faq-body">Saat ini kami fokus sebagai platform informasi wisata. Namun kami sedang mengembangkan fitur direktori pemandu wisata lokal yang dapat kamu hubungi langsung. Stay tuned!</div>
+            </div>
+          </div>
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header"><button class="accordion-button faq-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">Bagaimana cara bermitra dengan Traveloop?</button></h2>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body faq-body">Kami membuka peluang kerjasama dengan pengelola destinasi wisata, hotel, restoran, dan pelaku UMKM di sekitar Banyumas. Hubungi kami melalui formulir dengan topik "Kerjasama / Partnership".</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="wn-footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a class="wn-brand footer-brand" href="index.html"><i class="bi bi-compass me-2"></i>Traveloop</a>
+        <p class="footer-desc mt-3">Panduan lengkap menjelajahi destinasi wisata terbaik di Banyumas dan sekitarnya.</p>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6 class="footer-heading">Halaman</h6>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li><li><a href="about.html">Tentang Kami</a></li>
+          <li><a href="explore.html">Explore</a></li><li><a href="contact.html">Kontak</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6 class="footer-heading">Kategori</h6>
+        <ul class="footer-links">
+          <li><a href="explore.html?cat=nature">Alam</a></li><li><a href="explore.html?cat=beach">Pantai</a></li>
+          <li><a href="explore.html?cat=mountain">Gunung</a></li><li><a href="explore.html?cat=historical">Sejarah</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <h6 class="footer-heading">Newsletter</h6>
+        <div class="footer-newsletter mt-2">
+          <input type="email" class="form-control" placeholder="email@kamu.com"/>
+          <button class="btn btn-brand-sm">Langganan</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom mt-5 pt-4">
+      <p class="mb-0">© 2025 Traveloop — Wisata Banyumas.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => initNavScroll());
+
+  function sendContactForm() {
+    const name = document.getElementById('cName').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const msg = document.getElementById('cMessage').value.trim();
+    const alert = document.getElementById('contactAlert');
+
+    if (!name || !email || !msg) {
+      alert.className = 'alert alert-danger';
+      alert.textContent = 'Harap isi semua field yang wajib (*).';
+      alert.classList.remove('d-none');
+      return;
+    }
+
+    // Save to localStorage as "messages"
+    const messages = JSON.parse(localStorage.getItem('tl_messages') || '[]');
+    messages.unshift({
+      id: Date.now(), name, email,
+      phone: document.getElementById('cPhone').value,
+      topic: document.getElementById('cTopic').value,
+      message: msg,
+      date: new Date().toLocaleDateString('id-ID'),
+      read: false
+    });
+    localStorage.setItem('tl_messages', JSON.stringify(messages));
+
+    alert.className = 'alert alert-success';
+    alert.innerHTML = '<i class="bi bi-check-circle me-2"></i>Pesan berhasil dikirim! Kami akan membalas segera.';
+    alert.classList.remove('d-none');
+    ['cName','cEmail','cPhone','cMessage'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('cTopic').value = '';
+  }
+</script>
+</body>
+</html>
