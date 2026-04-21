@@ -588,10 +588,7 @@ const KULINER_DATA = [
 // localStorage "database" for admin
 const DB = {
   getPlaces() {
-    if (localStorage.getItem("tl_data_v3") !== "1") {
-      localStorage.removeItem("wn_places");
-      localStorage.setItem("tl_data_v3", "1");
-    }
+    if (window.firestorePlaces?.length) return window.firestorePlaces;
     try {
       const stored = localStorage.getItem("wn_places");
       if (stored) return JSON.parse(stored);

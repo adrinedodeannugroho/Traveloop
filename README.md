@@ -39,7 +39,7 @@ The website uses 12 built-in Indonesian destinations as demo data.
 
 ## 🔑 Admin Panel
 
-- URL: `/admin/index.html`
+- URL: `/admin/admin-index.html`
 - Default password: `admin123`
 - Features: Dashboard stats, CRUD for places, user management, settings, JSON export
 
