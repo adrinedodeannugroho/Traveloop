@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Traveloop</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="admin.css"/>
+</head>
+<body class="admin-body">
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="admin-login-screen">
+  <div class="login-card">
+    <div class="login-brand mb-4">
+      <i class="bi bi-compass"></i>
+      <span>Traveloop</span>
+    </div>
+    <h4 class="login-title">Admin Panel</h4>
+    <p class="login-sub">Sign in to manage destinations</p>
+    <div class="mb-3 mt-4">
+      <label class="form-label admin-label">Email</label>
+      <!-- Email sekarang bisa diedit, tidak readonly -->
+      <input type="email" id="loginEmail" class="form-control admin-input" placeholder="admin@traveloop.com"/>
+    </div>
+    <div class="mb-3">
+      <label class="form-label admin-label">Password</label>
+      <input type="password" id="loginPass" class="form-control admin-input" placeholder="Password…"/>
+    </div>
+    <div id="loginError" class="alert alert-danger d-none py-2 small"></div>
+    <button class="btn btn-admin-primary w-100 mt-2" onclick="doLogin()">
+      Sign In <i class="bi bi-arrow-right ms-1"></i>
+    </button>
+    <p class="text-center mt-3 small text-muted">
+      Login menggunakan akun Firebase Auth yang sudah dibuat.
+    </p>
+  </div>
+</div>
+
+<!-- ADMIN SHELL -->
+<div id="adminShell" class="admin-shell d-none">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-brand">
+      <i class="bi bi-compass"></i><span>Traveloop</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-link active" data-tab="dashboard" onclick="switchTab('dashboard',this)">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+      </a>
+      <a class="sidebar-link" data-tab="places" onclick="switchTab('places',this)">
+        <i class="bi bi-geo-alt"></i><span>Places</span>
+      </a>
+      <a class="sidebar-link" data-tab="users" onclick="switchTab('users',this)">
+        <i class="bi bi-people"></i><span>Users</span>
+      </a>
+      <a class="sidebar-link" data-tab="messages" onclick="switchTab('messages',this)">
+        <i class="bi bi-chat-dots"></i><span>Pesan Masuk</span>
+        <span class="sidebar-badge" id="msgBadge"></span>
+      </a>
+      <a class="sidebar-link" data-tab="analytics" onclick="switchTab('analytics',this)">
+        <i class="bi bi-graph-up"></i><span>Analitik</span>
+      </a>
+      <a class="sidebar-link" data-tab="settings" onclick="switchTab('settings',this)">
+        <i class="bi bi-gear"></i><span>Settings</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="../index.html" class="sidebar-link"><i class="bi bi-house"></i><span>View Site</span></a>
+      <a class="sidebar-link" onclick="doLogout()"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle-btn" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+      <h6 class="admin-page-title" id="pageTitle">Dashboard</h6>
+      <div class="topbar-right">
+        <span class="admin-user" id="adminUserLabel"><i class="bi bi-person-circle me-1"></i>Admin</span>
+      </div>
+    </header>
+
+    <div class="admin-content p-4">
+
+      <!-- DASHBOARD -->
+      <div class="admin-tab active" id="tab-dashboard">
+        <div class="row g-4 mb-5">
+          <div class="col-6 col-lg-3"><div class="stat-card" id="sc-total"></div></div>
+          <div class="col-6 col-lg-3"><div class="stat-card" id="sc-rating"></div></div>
+          <div class="col-6 col-lg-3"><div class="stat-card" id="sc-nature"></div></div>
+          <div class="col-6 col-lg-3"><div class="stat-card" id="sc-mountain"></div></div>
+          <div class="col-6 col-lg-3"><div class="stat-card" id="sc-gems"></div></div>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-7">
+            <div class="admin-card">
+              <div class="admin-card-header"><h6 class="admin-card-title mb-0">Destinasi Terbaru</h6></div>
+              <div class="admin-card-body p-0">
+                <table class="table admin-table mb-0" id="recentTable"></table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="admin-card">
+              <div class="admin-card-header"><h6 class="admin-card-title mb-0">Distribusi Kategori</h6></div>
+              <div class="admin-card-body" id="catDistribution"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLACES -->
+      <div class="admin-tab" id="tab-places">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+          <div class="admin-search-wrap">
+            <i class="bi bi-search"></i>
+            <input type="text" id="adminSearchInput" class="admin-input-sm" placeholder="Cari destinasi…" oninput="filterAdminPlaces()"/>
+          </div>
+          <button class="btn btn-admin-primary" onclick="openAddModal()">
+            <i class="bi bi-plus-lg me-2"></i>Tambah Destinasi
+          </button>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-body p-0">
+            <table class="table admin-table mb-0" id="placesTable">
+              <thead><tr><th>Nama</th><th>Kategori</th><th>Lokasi</th><th>Rating</th><th>Aksi</th></tr></thead>
+              <tbody id="placesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="admin-tab" id="tab-users">
+        <div class="admin-card">
+          <div class="admin-card-header"><h6 class="admin-card-title mb-0">Registered Users</h6></div>
+          <div class="admin-card-body p-0">
+            <table class="table admin-table mb-0">
+              <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MESSAGES -->
+      <div class="admin-tab" id="tab-messages">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+          <h6 class="admin-card-title mb-0">Pesan dari Pengunjung</h6>
+          <button class="btn btn-outline-secondary btn-sm" onclick="clearMessages()">
+            <i class="bi bi-trash me-1"></i>Hapus Semua
+          </button>
+        </div>
+        <div class="admin-card"><div class="admin-card-body p-0"><div id="messagesList"></div></div></div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="admin-tab" id="tab-analytics">
+        <div class="row g-4 mb-4">
+          <div class="col-12">
+            <div class="admin-card">
+              <div class="admin-card-header d-flex justify-content-between align-items-center">
+                <h6 class="admin-card-title mb-0"><i class="bi bi-search me-2"></i>Kata Kunci Pencarian Populer</h6>
+                <button class="btn btn-outline-danger btn-sm" onclick="clearSearchHistory()">
+                  <i class="bi bi-trash me-1"></i>Reset
+                </button>
+              </div>
+              <div class="admin-card-body" id="searchAnalyticsBody">
+                <p class="text-muted text-center py-3">Belum ada data pencarian.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="admin-card">
+              <div class="admin-card-header"><h6 class="admin-card-title mb-0">Rekomendasi Ditampilkan</h6></div>
+              <div class="admin-card-body">
+                <p class="text-muted small">Destinasi yang direkomendasikan berdasarkan pencarian user.</p>
+                <div id="recommendPreview" class="mt-3"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="admin-card">
+              <div class="admin-card-header"><h6 class="admin-card-title mb-0">Statistik Pencarian</h6></div>
+              <div class="admin-card-body" id="searchStatsBody"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="admin-tab" id="tab-settings">
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="admin-card">
+              <div class="admin-card-header"><h6 class="admin-card-title mb-0">API Configuration</h6></div>
+              <div class="admin-card-body">
+                <div class="mb-3">
+                  <label class="form-label admin-label">Google Maps API Key</label>
+                  <input type="text" id="apiKeyInput" class="form-control admin-input" placeholder="Masukkan API Key…"/>
+                  <small class="text-muted">Dapatkan di <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></small>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label admin-label">Default Radius (meter)</label>
+                  <input type="number" id="radiusInput" class="form-control admin-input" value="50000"/>
+                </div>
+                <button class="btn btn-admin-primary" onclick="saveSettings()">Simpan Settings</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="admin-card">
+              <div class="admin-card-header"><h6 class="admin-card-title mb-0">Data Management</h6></div>
+              <div class="admin-card-body">
+                <p class="text-muted small mb-3">Export data destinasi ke file JSON.</p>
+                <button class="btn btn-outline-secondary mb-2" onclick="exportData()">
+                  <i class="bi bi-download me-1"></i>Export JSON
+                </button>
+                <div class="alert alert-info small mt-3 mb-0">
+                  <i class="bi bi-info-circle me-1"></i>
+                  Data kini tersimpan di <strong>Firebase Firestore</strong>, bukan localStorage.
+                  Untuk seed data awal, jalankan <code>seedFirestore(MOCK_PLACES)</code> dari console browser.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  ADD / EDIT PLACE MODAL — Form lengkap semua field          -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="modal fade" id="placeModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius:16px;border:none;">
+      <div class="modal-header" style="border-bottom:1px solid var(--border);padding:1.25rem 1.5rem">
+        <h5 class="modal-title admin-card-title mb-0" id="placeModalTitle">Tambah Destinasi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <input type="hidden" id="placeId"/>
+
+        <!-- Section: Info Dasar -->
+        <h6 class="admin-section-label mb-3"><i class="bi bi-info-circle me-2"></i>Informasi Dasar</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-8">
+            <label class="form-label admin-label">Nama Destinasi *</label>
+            <input type="text" id="placeName" class="form-control admin-input" required placeholder="cth. Curug Cipendok"/>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label admin-label">Kategori *</label>
+            <select id="placeCategory" class="form-select admin-input">
+              <option value="nature">Nature</option>
+              <option value="beach">Beach</option>
+              <option value="mountain">Mountain</option>
+              <option value="cultural">Cultural</option>
+              <option value="historical">Historical</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label admin-label">Lokasi / Alamat *</label>
+            <input type="text" id="placeVicinity" class="form-control admin-input" placeholder="cth. Cilongok, Banyumas, Jawa Tengah"/>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label admin-label">Rating (0–5)</label>
+            <input type="number" id="placeRating" class="form-control admin-input" step="0.1" min="0" max="5" placeholder="4.5"/>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label admin-label">Jumlah Ulasan</label>
+            <input type="number" id="placeReviews" class="form-control admin-input" placeholder="1200"/>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label admin-label">Jarak dari Purwokerto (km)</label>
+            <input type="number" id="placeDistance" class="form-control admin-input" placeholder="22"/>
+          </div>
+          <div class="col-md-6 d-flex align-items-end pb-1">
+            <div class="form-check">
+              <input type="checkbox" id="placeHiddenGem" class="form-check-input"/>
+              <label class="form-check-label admin-label" for="placeHiddenGem">
+                <i class="bi bi-gem me-1 text-purple"></i>Hidden Gem
+              </label>
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label admin-label">Deskripsi</label>
+            <textarea id="placeDesc" class="form-control admin-input" rows="3" placeholder="Deskripsi singkat destinasi…"></textarea>
+          </div>
+          <div class="col-12">
+            <label class="form-label admin-label">Sejarah / Latar Belakang</label>
+            <textarea id="placeHistory" class="form-control admin-input" rows="3" placeholder="Cerita sejarah atau latar belakang tempat ini…"></textarea>
+          </div>
+          <div class="col-12">
+            <label class="form-label admin-label">Tips Berkunjung</label>
+            <textarea id="placeTips" class="form-control admin-input" rows="2" placeholder="Tips berguna untuk pengunjung…"></textarea>
+          </div>
+          <div class="col-12">
+            <label class="form-label admin-label">Tags <small class="text-muted">(pisahkan dengan koma)</small></label>
+            <input type="text" id="placeTags" class="form-control admin-input" placeholder="alam, air-terjun, hidden-gem"/>
+          </div>
+        </div>
+
+        <!-- Section: Foto -->
+        <h6 class="admin-section-label mb-3"><i class="bi bi-image me-2"></i>Foto</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="form-label admin-label">Upload Foto Baru</label>
+            <input type="file" id="placePhotoFile" class="form-control admin-input" accept="image/*"/>
+            <small class="text-muted">Format: JPG, PNG, WebP. Maks 5MB. Upload akan ke Firebase Storage.</small>
+          </div>
+          <div class="col-12" id="uploadProgressWrap" style="display:none">
+            <div class="progress" style="height:8px;border-radius:4px">
+              <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label admin-label">Atau URL Foto (jika sudah ada)</label>
+            <input type="url" id="placePhoto" class="form-control admin-input" placeholder="https://…"/>
+          </div>
+        </div>
+
+        <!-- Section: HTM -->
+        <h6 class="admin-section-label mb-3"><i class="bi bi-ticket-perforated me-2"></i>Harga Tiket Masuk (HTM)</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label admin-label">Weekday (Rp)</label>
+            <input type="number" id="placeHtmWeekday" class="form-control admin-input" placeholder="15000"/>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label admin-label">Weekend (Rp)</label>
+            <input type="number" id="placeHtmWeekend" class="form-control admin-input" placeholder="20000"/>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label admin-label">Parkir (Rp)</label>
+            <input type="number" id="placeHtmParking" class="form-control admin-input" placeholder="5000"/>
+          </div>
+          <div class="col-12">
+            <label class="form-label admin-label">Catatan HTM</label>
+            <input type="text" id="placeHtmNote" class="form-control admin-input" placeholder="cth. Harga per orang, parkir terpisah"/>
+          </div>
+        </div>
+
+        <!-- Section: Jam Buka -->
+        <h6 class="admin-section-label mb-3"><i class="bi bi-clock me-2"></i>Jam Operasional</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label admin-label">Hari Buka</label>
+            <input type="text" id="placeOpenDays" class="form-control admin-input" placeholder="Setiap hari / Senin–Jumat"/>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label admin-label">Jam Buka</label>
+            <input type="time" id="placeOpenTime" class="form-control admin-input"/>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label admin-label">Jam Tutup</label>
+            <input type="time" id="placeCloseTime" class="form-control admin-input"/>
+          </div>
+        </div>
+
+        <!-- Section: Fasilitas -->
+        <h6 class="admin-section-label mb-3"><i class="bi bi-grid-3x3-gap me-2"></i>Fasilitas</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="form-label admin-label">Fasilitas <small class="text-muted">(pisahkan dengan koma)</small></label>
+            <input type="text" id="placeFacilities" class="form-control admin-input" placeholder="Parkir, Toilet, Warung Makan, Mushola"/>
+          </div>
+        </div>
+
+        <!-- Section: Koordinat -->
+        <h6 class="admin-section-label mb-3"><i class="bi bi-geo-alt me-2"></i>Koordinat</h6>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label admin-label">Latitude</label>
+            <input type="number" id="placeLat" class="form-control admin-input" step="any" placeholder="-7.3797"/>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label admin-label">Longitude</label>
+            <input type="number" id="placeLng" class="form-control admin-input" step="any" placeholder="109.1483"/>
+          </div>
+          <div class="col-12">
+            <small class="text-muted">
+              <i class="bi bi-info-circle me-1"></i>
+              Cari koordinat di <a href="https://maps.google.com" target="_blank">Google Maps</a> → klik kanan di lokasi → salin koordinat.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="border-top:1px solid var(--border)">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+        <button class="btn btn-admin-primary" id="savePlaceBtn" onclick="savePlaceUI()">
+          <i class="bi bi-check2 me-1"></i>Simpan
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../config.js"></script>
+<script src="../script.js"></script>
+
+<!-- Firebase admin module -->
+<script type="module">
+  import {
+    initAdmin, doLogin, doLogout, switchTab, toggleSidebar,
+    openAddModal, openEditModal, savePlaceUI, deletePlaceUI,
+    filterAdminPlaces, markReadUI, deleteMessageUI, clearMessages,
+    saveSettings, exportData
+  } from "./admin-firebase.js";
+
+  // Expose ke global agar bisa dipanggil dari HTML onclick
+  window.initAdmin        = initAdmin;
+  window.doLogin          = doLogin;
+  window.doLogout         = doLogout;
+  window.switchTab        = switchTab;
+  window.toggleSidebar    = toggleSidebar;
+  window.openAddModal     = openAddModal;
+  window.openEditModal    = openEditModal;
+  window.savePlaceUI      = savePlaceUI;
+  window.deletePlaceUI    = deletePlaceUI;
+  window.filterAdminPlaces = filterAdminPlaces;
+  window.markReadUI       = markReadUI;
+  window.deleteMessageUI  = deleteMessageUI;
+  window.clearMessages    = clearMessages;
+  window.saveSettings     = saveSettings;
+  window.exportData       = exportData;
+
+  window.addEventListener("DOMContentLoaded", initAdmin);
+</script>
+</body>
+</html>
